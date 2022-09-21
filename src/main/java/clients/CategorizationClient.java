@@ -19,21 +19,41 @@ public class CategorizationClient extends RestClient {
 
     public JSONObject classifyImages(List<String> localImagesPaths, List<String> imageURLs,
                                             String taskID) {
-        return classifyImages(localImagesPaths, imageURLs, taskID, null, false);
+        return classifyImages(localImagesPaths, imageURLs, taskID, null, false, "");
+    }
+
+    public JSONObject classifyImages(List<String> localImagesPaths, List<String> imageURLs,
+                                     String taskID, String workspaceID) {
+        return classifyImages(localImagesPaths, imageURLs, taskID, null, false, workspaceID);
     }
 
     public JSONObject classifyImages(List<String> localImagesPaths, List<String> imageURLs,
                                             String taskID, int modelVersion) {
-        return classifyImages(localImagesPaths, imageURLs, taskID, modelVersion, false);
+        return classifyImages(localImagesPaths, imageURLs, taskID, modelVersion, false, "");
     }
 
     public JSONObject classifyImages(List<String> localImagesPaths, List<String> imageURLs,
                                             String taskID, boolean storeImages) {
-        return classifyImages(localImagesPaths, imageURLs, taskID, null, storeImages);
+        return classifyImages(localImagesPaths, imageURLs, taskID, null, storeImages, "");
     }
 
     public JSONObject classifyImages(List<String> localImagesPaths, List<String> imageURLs,
-                                            String taskID, Integer modelVersion, boolean storeImages) {
+                                     String taskID, int modelVersion, boolean storeImages) {
+        return classifyImages(localImagesPaths, imageURLs, taskID, modelVersion, storeImages, "");
+    }
+
+    public JSONObject classifyImages(List<String> localImagesPaths, List<String> imageURLs,
+                                     String taskID, int modelVersion, String workspaceID) {
+        return classifyImages(localImagesPaths, imageURLs, taskID, modelVersion, false, workspaceID);
+    }
+
+    public JSONObject classifyImages(List<String> localImagesPaths, List<String> imageURLs,
+                                     String taskID, boolean storeImages, String workspaceID) {
+        return classifyImages(localImagesPaths, imageURLs, taskID, null, storeImages, workspaceID);
+    }
+
+    public JSONObject classifyImages(List<String> localImagesPaths, List<String> imageURLs,
+                                            String taskID, Integer modelVersion, boolean storeImages, String workspaceID) {
         JSONObject result = null;
         try {
             List<JSONObject> records = Utility.createJsonObjectsFromLocalImages(localImagesPaths);
@@ -43,6 +63,9 @@ public class CategorizationClient extends RestClient {
             data.put("task", taskID);
             if (modelVersion != null) {
                 data.put("version", modelVersion);
+            }
+            if (workspaceID != null && !workspaceID.equals("")) {
+                data.put("workspace", workspaceID);
             }
             data.put("store_images", storeImages);
             data.put("records", records);
@@ -56,23 +79,35 @@ public class CategorizationClient extends RestClient {
     }
 
     public JSONObject listTasks() {
-        JSONObject result = get(token, TASK_ENDPOINT);
-        System.out.println(result);
-        return result;
+        return get(token, TASK_ENDPOINT);
     }
 
     public JSONObject uploadTrainingImage(CategorizationImageDataURL imageDataURL) {
+        return uploadTrainingImage(imageDataURL, "");
+    }
+
+    public JSONObject uploadTrainingImage(CategorizationImageDataURL imageDataURL, String workspaceID) {
         JSONObject data = new JSONObject();
         data.put("url", imageDataURL.getUrl());
         data.put("meta_data", new JSONObject(imageDataURL.getMetaData()));
+        if (workspaceID != null && !workspaceID.equals("")) {
+            data.put("workspace", workspaceID);
+        }
 
         return post(data, token, TRAINING_ENDPOINT);
     }
 
     public JSONObject uploadTrainingImage(CategorizationImageDataBase64 imageDataBase64) {
+        return uploadTrainingImage(imageDataBase64, "");
+    }
+
+    public JSONObject uploadTrainingImage(CategorizationImageDataBase64 imageDataBase64, String workspaceID) {
         JSONObject data = new JSONObject();
         data.put("base64", imageDataBase64.getBase64Data());
         data.put("meta_data", new JSONObject(imageDataBase64.getMetaData()));
+        if (workspaceID != null && !workspaceID.equals("")) {
+            data.put("workspace", workspaceID);
+        }
 
         return post(data, token, TRAINING_ENDPOINT);
     }

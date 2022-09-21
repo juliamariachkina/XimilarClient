@@ -11,8 +11,9 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class SimilarityClient extends RestClient {
-     protected <T extends SimilarityImageData> JSONObject insertImages(String collectionId, List<T> records, List<String> fieldsToReturn,
-                                                                             String endpoint, String authorizationToken) {
+     protected <T extends SimilarityImageData> JSONObject insertImages(String collectionId, List<T> records,
+                                                                       List<String> fieldsToReturn,
+                                                                       String endpoint, String authorizationToken) {
         if (records == null || records.isEmpty()) {
             throw new IllegalArgumentException("Input records are null or empty");
         }

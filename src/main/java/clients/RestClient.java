@@ -21,15 +21,18 @@ public class RestClient {
     public static final String BASE_URL = "https://api.ximilar.com/";
 
     public static JSONObject get(String authorizationToken, String endpoint) {
+        JSONObject result = null;
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpGet httpGet = new HttpGet(BASE_URL + endpoint);
             httpGet.addHeader("authorization", authorizationToken);
+
             CloseableHttpResponse response = httpClient.execute(httpGet);
-            return new JSONObject(new BufferedReader(new InputStreamReader(response.getEntity().getContent())).lines().collect(Collectors.joining("\n")));
+            result = new JSONObject(new BufferedReader(new InputStreamReader(response.getEntity().getContent()))
+                    .lines().collect(Collectors.joining("\n")));
         } catch (IOException e) {
             System.err.println(e);
         }
-        return new JSONObject();
+        return result;
     }
 
     public static JSONObject post(JSONObject data, String authorizationToken, String endpoint) {
@@ -37,6 +40,7 @@ public class RestClient {
     }
 
     public static JSONObject post(JSONObject data, String authorizationToken, String endpoint, Map<String, String> headers) {
+        JSONObject result = null;
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             StringEntity requestEntity = new StringEntity(data.toString(4), ContentType.APPLICATION_JSON);
 
@@ -48,10 +52,11 @@ public class RestClient {
             httpPost.setEntity(requestEntity);
 
             HttpResponse response = httpClient.execute(httpPost);
-            return new JSONObject(new BufferedReader(new InputStreamReader(response.getEntity().getContent())).lines().collect(Collectors.joining("\n")));
+            result = new JSONObject(new BufferedReader(new InputStreamReader(response.getEntity().getContent()))
+                    .lines().collect(Collectors.joining("\n")));
         } catch (Exception e) {
             System.err.println(e);
         }
-        return new JSONObject();
+        return result;
     }
 }
